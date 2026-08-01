@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product Management</title>
+
+<style>
+    body{
+        font-family: Arial, sans-serif;
+        margin:20px;
+    }
+
+    h2{
+        text-align:center;
+    }
+
+    input{
+        width:300px;
+        padding:8px;
+        margin-bottom:10px;
+    }
+
+    button{
+        padding:8px 15px;
+        cursor:pointer;
+        margin-left:5px;
+        text-align: end;
+    }
+
+    table{
+        width:100%;
+        border-collapse:collapse;
+        margin-top:20px;
+    }
+
+    th,td{
+        border:1px solid #ccc;
+        padding:10px;
+        text-align:center;
+    }
+
+    img{
+        border-radius:5px;
+    }
+
+    .error{
+        color:red;
+        font-size:14px;
+    }
+
+    .success{
+        color:#ccc;
+        margin-top:10px;
+        font-weight:bold;
+    }
+
+    .loading{
+        color:black;
+        font-weight:bold;
+        margin-top:100px;
+        font-size:25px;
+        text-align: center;
+    }
+
+    .modal{
+        display:none;
+        position:fixed;
+        top:0;
+        left:0;
+        width:100%;
+        height:100%;
+        background:black;
+    }
+
+    .modal-content{
+        background:white;
+        width:400px;
+        padding:20px;
+        margin:100px auto;
+        border-radius:10px;
+    }
+
+    .close{
+        float:right;
+        cursor:pointer;
+        font-size:20px;
+        font-weight:bold;
+    }
+
+    .product-link{
+        color:blue;
+        cursor:pointer;
+        text-decoration:underline;
+    }
+</style>
+</head>
+<body>
+<h2>Product Management</h2>
+<button onclick="addProduct()">Add Product</button>
+<div id="message"></div>
+<div id="loading"></div>
+<hr>
+<table>
+    <thead>
+        <tr>
+            <th>Product Name</th>
+            <th>Price</th>
+            <th>Avatar</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody id="productTable"></tbody>
+</table>
+<!-- Modal -->
+<div id="productModal" class="modal">
+    <div style="display:flex;justify-content:flex-end;gap:10px;"></div>
+    <div class="modal-content">
+   <button onclick="deleteCurrentProduct()"
+    style="float:left;background:red;color:white;border:none;padding:5px 10px;border-radius:5px;">
+    Delete
+    </button>
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h3>Product Details</h3>
+        <div id="modalBody"></div>
+    </div>
+</div>
+<script>
+const API_URL =
+"https://6a322ccb7bc5e1c61266a35f.mockapi.io/api/v1/products";
+let products = [];
+let editId = null;
+window.onload = function(){
+    getProducts();
+};
+function showLoading(){
+    document.getElementById("loading").innerHTML =
+    "<p class='loading'>Loading...</p>";
+}
+function hideLoading(){
+    document.getElementById("loading").innerHTML = "";
+}
+function showMessage(msg,color="green"){
+    document.getElementById("message").innerHTML =
+    `<p style="color:${color};font-weight:bold">${msg}</p>`;
+    setTimeout(()=>{
+        document.getElementById("message").innerHTML="";
+    },3000);
+}
+//get prod
+async function getProducts(){
+    showLoading();
+    try{
+        const response = await fetch(API_URL);
+        products = await response.json();
+        displayProducts();
+    }
+    catch(error){
+        showMessage("Failed to load products","red");
+        console.log(error);
+    }
+    finally{
+        hideLoading();
+    }
+}
+function displayProducts(){
+    let output = "";
+    products.forEach(function(product){
+        output += `
+        <tr>
+            <td>
+                <span class="product-link"onclick="viewProduct('${product.id}')">${product.name}</span>
+            </td>
+            <td>${product.price}</td>
+            <td>
+                <img src="${product.avatar}"width="70"height="70">
+            </td>
+            <td>
+                <button onclick="editProduct('${product.id}')">Edit</button>
+                <button onclick="deleteProduct('${product.id}')">Delete</button>
+            </td>
+        </tr>
+        `;
+    });
+    document.getElementById("productTable").innerHTML =
+    output;
+}
+function validateForm(){
+    let name =
+    document.getElementById("productName").value;
+    let price =
+    document.getElementById("price").value;
+    let avatar =
+
+    document.getElementById("avatar").value;
+    document.getElementById("nameError").innerHTML="";
+    document.getElementById("priceError").innerHTML="";
+    document.getElementById("avatarError").innerHTML="";
+
+    let isValid = true;
+    if(name===""){
+        document.getElementById("nameError").innerHTML =
+        "Product name is required";
+        isValid = false;
+    }
+    if(price===""){
+        document.getElementById("san").innerHTML =
+        "ffff is required";
+        isValid = false;
+    }
+    else if(isNaN(price) || Number(price)<=0){
+
+        document.getElementById("priceError").innerHTML =
+        "Enter valid positive price";
+        isValid = false;
+    }
+    if(avatar===""){
+        document.getElementById("avatarError").innerHTML =
+        "Avatar URL is required";
+        isValid = false;
+    }
+    return isValid;
+}
+//add product
+async function addProduct(){
+    if(!validateForm()){
+        return;
+    }
+    const newProduct = {
+        name:
+        document.getElementById("productName").value,
+
+        price:
+        document.getElementById("price").value,
+
+        avatar:
+        document.getElementById("avatar").value
+    };
+    showLoading();
+    try{
+        await fetch(API_URL,{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify(newProduct)
+        });
+        showMessage("Product Added Successfully");
+        clearForm();
+        getProducts();
+    }
+    catch(error){
+        showMessage("Failed to add product","red");
+        console.log(error);
+    }
+    finally{
+        hideLoading();
+    }
+}
+//edit product
+function editProduct(id){
+    let product = products.find(function(product){
+        return product.id === id;
+    });
+    document.getElementById("productName").value =
+    product.name;
+
+    document.getElementById("price").value =
+    product.price;
+
+    document.getElementById("avatar").value =
+    product.avatar;
+
+    editId = id;
+}
+//update pro
+async function updateProduct(){
+    if(editId===null){
+        let currentProductId = null;
+
+        showMessage("Select product to edit","red");
+        return;
+    }
+    if(!validateForm()){
+        return;
+    }
+    const updatedProduct = {
+        name:
+        document.getElementById("productName").value,
+
+        price:
+        document.getElementById("price").value,
+
+        avatar:
+        document.getElementById("avatar").value
+    };
+    showLoading();
+    try{
+        await fetch(API_URL + "/" + editId,{
+            method:"PUT",
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body:JSON.stringify(updatedProduct)
+        });
+        showMessage("Product Updated Successfully");
+        clearForm();
+        editId = null;
+        getProducts();
+    }
+    catch(error){
+        showMessage("Failed to update product","red");
+        console.log(error);
+    }
+    finally{
+        hideLoading();
+    }
+}
+//delete
+async function deleteProduct(id){
+    let confirmDelete =
+    confirm("Are you sure you want to delete?");
+    if(!confirmDelete){
+        return;
+    }
+    showLoading();
+    try{
+        await fetch(API_URL + "/" + id,{
+            method:"DELETE"
+        });
+        showMessage("Product Deleted Successfully");
+        getProducts();
+    }
+    catch(error){
+        showMessage("Failed to delete product","red");
+        console.log(error);
+    }
+    finally{
+        hideLoading();
+    }
+}
+async function viewProduct(id)
+    showLoading();
+    try{
+        const response = await fetch(API_URL + "/" + id);
+        const product =  await response.json();
+        currentProductId = product.id;
+document.getElementById("modalBody").innerHTML =
+`
+<p><strong>ID:</strong> ${product.id}</p>
+<p><strong>Product Name:</strong>
+${product.productName}</p>
+<p><strong>Name:</strong>
+${product.name}</p>
+<p><strong>Price:</strong>
+${product.price}</p>
+
+<p><strong>Created Date:</strong>
+${product.createdAt}</p>
+
+<img src="${product.avatar}" width="150">
+`;
+        document.getElementById("productModal").style.display = "block";
+    }
+    catch(error){
+
+        showMessage("Failed to fetch details","red");
+
+        console.log(error);
+    }
+    finally{
+
+        hideLoading();
+
+    }
+
+async function deleteCurrentProduct(){
+
+    if(currentProductId){
+
+        await deleteProduct(currentProductId);
+
+        closeModal();
+    }
+}
+
+function closeModal(){
+    document.getElementById("productModal")
+    .style.display = "none";
+}
+function clearForm(){
+    document.getElementById("productName").value="";
+    document.getElementById("price").value="";
+    document.getElementById("avatar").value="";
+
+    document.getElementById("nameError").innerHTML="";
+    document.getElementById("priceError").innerHTML="";
+    document.getElementById("avatarError").innerHtml="";   
+}
+</script>
+</body>
+</html>

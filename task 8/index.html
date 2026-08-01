@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>student management </title>
+</head>
+<body>
+     
+     <script>
+        //student data
+
+        let students =[
+            {
+                id: 1,
+                name: "pavi",
+                mark: 80
+            },
+            {
+                id: 2,
+                name: "madhu",
+                mark: 40
+
+            },
+            {
+                id: 3,
+                name: "chandran",
+                mark: 70
+            }
+        
+        ];
+        console.log("original students list:");
+        console.log(students);
+
+        //add new student
+    students.push({
+   id: 4,
+   name: "vinoth",
+   mark: 90
+});
+
+let addstudentsNames = students.map(function(student){
+   return student.name;
+});
+
+console.log(addstudentsNames);
+
+        //remove resently added student
+     students.pop();
+        console.log("after removing recently added student:");
+        console.log (students);
+        // create new student list
+
+ let studentNames = students.map(function(student){
+    return student.name;
+        });
+        console.log("student names:");
+        console.log(studentNames);
+
+        // student score more then 50
+
+        let passedstudents = students.filter(function(student){
+        return student.mark >50;
+    });
+        console.log("students scored more than 50:");
+        console.log(passedstudents);
+     </script>
+
+</body>
+</html>

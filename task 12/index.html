@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <title> product management</title>
+    <style>
+        *{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+body{
+    display:flex;
+    background:#f5f6fa;
+    font-family:Arial,sans-serif;
+}
+.sidebar{
+    width:250px;
+    height:100vh;
+    background:#0f172a;
+    color:white;
+    padding:20px;
+    position:fixed;
+}
+.sidebar h2{
+    margin-bottom:30px;
+}
+.sidebar ul{
+    list-style:none;
+}
+.sidebar li{
+    padding:15px;
+    margin-bottom:10px;
+    border-radius:10px;
+    cursor:pointer;
+}
+.sidebar li:hover,
+.sidebar .active{
+    background:#2563eb;
+}
+/* Main */
+.main-content{
+    margin-left:270px;
+    padding:30px;
+    width:calc(100% - 270px);
+}
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:30px;
+}
+.header .normal-btn{
+    background:#2563eb;
+    color:white;
+    border:none;
+    padding:12px 20px;
+    border-radius:10px;
+    cursor:pointer;
+}
+.add-btn{
+    background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+    color:white;
+    border:none;
+    padding:12px 20px;
+    border-radius:10px;
+    cursor:pointer;
+}
+table{
+    width:100%;
+    background:white;
+    border-radius:15px;
+    border-collapse:collapse;
+    overflow:hidden;
+}
+thead{
+    background:#f1f5f9;
+}
+th{
+    padding:20px;
+    text-align:left;
+}
+td{
+    padding:20px;
+    border-top:1px solid #eee;
+}
+.table-container{
+    width:100%;
+    background:#fff;
+    border-radius:15px;
+    padding:20px;
+}
+
+.table-body{
+    max-height:500px;
+    overflow-y:auto;
+    overflow-x:hidden;
+}
+.total-products{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    padding:10px 15px;
+    background: #fff;;
+    font-size:20px;
+    font-weight: bold;
+}
+
+.total-products i{
+    color:#2563eb;
+    font-size:18px;
+}
+.table-body{
+    max-height:9000px;
+    overflow-y:auto;
+}
+
+thead th{
+    position:sticky;
+    top:0;
+    background:#f1f5f9;
+    z-index:100;
+}
+.product-img{
+    width:60px;
+    height:60px;
+    border-radius:10px;
+    object-fit:cover;
+}
+.edit-btn{
+    background:#2563eb;
+    color:white;
+    border:none;
+    padding:8px 15px;
+    border-radius:8px;
+}
+.delete-btn{
+    background:red;
+    color:white;
+    border:none;
+    padding:8px 15px;
+    border-radius:8px;
+}
+.pagination-wrapper{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:20px;
+}
+.pagination{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+.page-btn{
+    width:40px;
+    height:40px;
+    border:1px solid #ddd;
+    background:white;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:14px;
+}
+.page-btn:hover{
+    background:#f1f5f9;
+}
+.page-btn.active{
+    background:#2563eb;
+    color:white;
+    border:none;
+}
+#pageInfo{
+    font-size:16px;
+    color:#555;
+}
+.modal{
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.7);
+    z-index:9999;   
+    justify-content:center;
+    align-items:center;
+}
+.modal-content{
+    position:relative;
+    background:#fff;
+    padding:35px;
+    border-radius:15px;
+    width:650px;
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.3);
+}
+.modal-actions{
+    display:flex;
+    justify-content:flex-end;
+    gap:15px;
+    margin-top:15px;
+}
+.modal-actions button{
+    padding:12px 25px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:15px;
+    font-weight:bold;
+}
+.modal-actions button:first-child{
+    background:#2563eb;
+    color:white;
+}
+.modal-actions button:last-child{
+    background:#ef4444;
+    color:white;
+}
+.modal-content label{
+    font-weight:bold;
+    color:#333;
+    margin-bottom:-8px;
+}
+.modal-content input{
+    padding:12px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    font-size:15px;
+}
+.cancel-btn{
+    background:#6b7280;
+    color:white;
+    border:none;
+    padding:10px 20px;
+    border-radius:8px;
+    cursor:pointer;
+}
+.close-btn{
+    position:absolute;
+    top:15px;
+    right:20px;
+    font-size:30px;
+    font-weight:bold;
+    cursor:pointer;
+}
+.close-btn:hover{
+    color:red;
+}
+.delete-actions{
+    display:flex;
+    justify-content:flex-end;
+    align-items:center;
+    gap:10px;
+    margin-top:20px;
+}
+.cancel-btn{
+    background:#6b7280;
+    color:white;
+    border:none;
+    padding:10px 20px;
+    border-radius:8px;
+    cursor:pointer;
+}
+.delete-confirm-btn{
+    background:red;
+    color:white;
+    border:none;
+    padding:10px 20px;
+    border-radius:8px;
+    cursor:pointer;
+}
+.table-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+    background:white;
+    padding:15px 20px;
+    border-radius:12px;
+}
+.left-tools select{
+    padding:10px 15px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    font-size:15px;
+    cursor:pointer;
+}
+.right-tools{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+.search-box{
+    display:flex;
+    align-items:center;
+    border:1px solid #ddd;
+    border-radius:8px;
+    padding:10px 15px;
+    background:white;
+}
+.search-box i{
+    color:#777;
+    margin-right:10px;
+}
+.search-box input{
+    border:none;
+    outline:none;
+    width:220px;
+    font-size:15px;
+}
+.filter-btn{
+    width:45px;
+    height:45px;
+    border:none;
+    border-radius:10px;
+    background:linear-gradient(135deg,#06b6d4,#3b82f6);
+    color:white;
+    cursor:pointer;
+    transition:.3s;
+}
+.filter-btn:hover{
+    background:#2563eb;
+    color:white;
+}
+.filter-dropdown{
+    position:relative;
+}
+.filter-menu{
+    display:none;
+    position:absolute;
+    top:48px;
+    right:0;
+    width:220px;
+    background:#fff;
+    border:1px solid #ddd;
+    border-radius:10px;
+    box-shadow:0 5px 15px rgba(0,0,0,.15);
+    overflow:hidden;
+    z-index:999;
+}
+.filter-menu.show{
+    display:block;
+}
+.filter-menu div{
+    padding:12px 15px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+.filter-menu div:hover{
+    background:#2563eb;
+    color:#fff;
+}
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+    <h2>product section</h2>
+<ul>
+    <li class="menu-item" onclick="setActive(this)">Dashboard</li>
+    <li class="menu-item active" onclick="setActive(this)">Products</li>
+    <li class="menu-item" onclick="setActive(this)">Add products</li>
+    <li class="menu-item" onclick="setActive(this)">Edit product</li>
+    <li class="menu-item" onclick="setActive(this)">Delete product</li>
+    <li class="menu-item" onclick="setActive(this)">Product details</li>
+    <li class="menu-item" onclick="setActive(this)">Settings</li>
+</ul>
+</div>
+<div class="main-content">
+    <div class="header">
+        <div>
+            <h1>Products</h1>
+            <p>Manage your products</p>
+             </div> <button class="add-btn" onclick="openAddModal()">
+    <i class="fa-solid fa-plus"></i> Add Product
+</button>
+</div>
+                     
+  <div class="table-container">
+    </div>
+    <!-- Top Toolbar -->
+    <div class="table-header">
+
+        <div class="left-tools">
+           <div class="total-products">
+    <i class="fa-solid fa-box"></i>
+    <h5>Total Products : <b id="totalProducts">0</b></h5>
+</div>
+</div>
+        <div class="right-tools">
+
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search products...">
+            </div>
+
+            <div class="filter-dropdown">
+
+    <button class="filter-btn" onclick="toggleFilter()">
+        <i class="fa-solid fa-filter"></i>
+    </button>
+    <div id="filterMenu" class="filter-menu">
+        <div onclick="sortProducts('low')">
+            <i class="fa-solid fa-arrow-down"></i>
+            Price Low → High
+        </div>
+        <div onclick="sortProducts('high')">
+            <i class="fa-solid fa-arrow-up"></i>
+            Price High → Low
+        </div>
+        <div onclick="sortProducts('latest')">
+            <i class="fa-solid fa-clock"></i>
+            Latest
+        </div>
+        <div onclick="sortProducts('oldest')">
+            <i class="fa-regular fa-clock"></i>
+            Oldest
+        </div>
+    </div>
+
+</div>
+        </div>
+
+    </div>
+    <!-- Only Table Scroll -->
+    <div class="table-body">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Created Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="productTable"></tbody>
+
+        </table>
+    </div>
+   <div class="pagination-wrapper">
+    <p id="pageInfo"></p>
+   <div class="pagination"></div>
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <h2>Edit Product</h2>
+        <label>Product Name</label>
+        <input type="text" id="editName" placeholder="Enter Product Name">
+        <label>Price</label>
+        <input type="number" id="editPrice" placeholder="Enter Price">
+        <label>Avatar URL</label>
+        <input type="text" id="editAvatar" placeholder="Enter Avatar URL">
+        <div class="modal-actions">
+            <button id="saveBtn" onclick="updateProduct()">Update</button>
+            <button onclick="closeModal()">Cancel</button></div>
+</div>
+</div>
+</div>
+<div id="deleteModal" class="modal">
+    <div class="modal-content">
+        <h2>Delete Product</h2>
+        <p>Are you sure you want to delete this product?</p>
+        <div class="delete-actions">
+            <span class="close-btn" onclick="closeDeleteModal()">
+                &times; </span>
+            <button class="cancel-btn" onclick="closeDeleteModal()"> Cancel</button>
+            <button class="delete-confirm-btn" onclick="confirmDelete()"> Yes, Delete</button>
+        </div>
+    </div>
+</div>
+    </div>
+</div>
+<script>
+let editId = null;
+const API_URL =
+"https://6a322ccb7bc5e1c61266a35f.mockapi.io/api/v1/products";
+let products = [];
+let filteredProducts = [];
+let currentPage = 1;
+let itemsPerPage = 5;
+window.onload = function(){
+    getProducts();
+    document.getElementById("searchInput").addEventListener("input", function(){
+        currentPage = 1;
+        displayProducts();
+    });
+};
+async function getProducts(){
+    try{
+        const response = await fetch(API_URL);
+        products = await response.json();
+        displayProducts();
+    }
+    catch(error){
+        console.log(error);
+    }
+}
+function displayProducts(){
+    let keyword = document.getElementById("searchInput").value.toLowerCase();
+
+    filteredProducts = products.filter(product =>
+        (product.name || product.productName)
+        .toLowerCase()
+        .includes(keyword)
+    );
+
+    let output = "";
+
+    let start = (currentPage - 1) * itemsPerPage;
+    let end = start + itemsPerPage;
+
+    let paginatedProducts = filteredProducts.slice(start, end);
+    if (paginatedProducts.length === 0) {
+
+    document.getElementById("productTable").innerHTML = `
+        <tr>
+            <td colspan="5" style="text-align:center;padding:40px;">
+                <i class="fa-solid fa-box-open"
+                   style="font-size:40px;color:#bbb;"></i>
+                <br><br>
+                <b>No products found</b>
+        
+            </td>
+        </tr>
+    `;
+    document.getElementById("pageInfo").innerText =
+        "Showing 0 to 0 of 0 products";
+
+    document.querySelector(".pagination").innerHTML = "";
+    return;
+}
+    paginatedProducts.forEach(function(product){
+        output += `
+        <tr>
+            <td>${product.id}</td>
+
+            <td>
+                <div style="display:flex;align-items:center;gap:15px">
+                    <img src="${product.avatar}" class="product-img">
+                 <h4 style="font-family: 'Poppins', sans-serif; font-weight: bold;">
+    ${product.name || product.productName}
+</h4>
+                </div>
+            </td>
+
+            <td style="font-family: 'Poppins', sans-serif; font-weight: 700;">
+    ₹${product.price}
+</td>
+             <td>${formatDate(product.createdAt)}</td>
+            <td>
+                <button class="edit-btn" onclick="editProduct('${product.id}')">
+                    <i class="fa-solid fa-pen-to-square"></i> Edit
+                </button>
+
+                <button class="delete-btn" onclick="deleteProduct('${product.id}')">
+                    <i class="fa-solid fa-trash"></i> Delete
+                </button>
+            </td>
+        </tr>
+        `;
+    });
+    document.getElementById("productTable").innerHTML = output;
+    document.getElementById("totalProducts").innerText = filteredProducts.length;
+    updatePaginationInfo();
+    updatePagination();
+}
+function formatDate(dateString){
+    const date = new Date(dateString);
+    return date.toLocaleString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+    });
+}           
+function updatePaginationInfo(){
+
+    let start = filteredProducts.length === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
+    let end = Math.min(currentPage * itemsPerPage, filteredProducts.length);
+    document.getElementById("pageInfo").innerText =
+    `Showing ${start} to ${end} of ${filteredProducts.length} products`;
+}
+function updatePagination() {
+    let totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+    let html = "";
+    // Prev button
+    html += `
+        <button class="page-btn" onclick="prevPage()" ${currentPage === 1 ? "disabled" : ""}>
+            <i class="fa-solid fa-chevron-left"></i>
+        </button>
+    `;
+    // Page numbers logic (like image)
+    let maxVisible = 3;
+    let startPage = Math.max(1, currentPage - 1);
+    let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+    if (endPage - startPage < maxVisible - 1) {
+        startPage = Math.max(1, endPage - maxVisible + 1);
+    }
+    // First page
+    if (startPage > 1) {
+        html += `<button class="page-btn" onclick="goToPage(1)">1</button>`;
+        if (startPage > 2) {
+            html += `<span>...</span>`;
+        }
+    }
+    // Middle pages
+    for (let i = startPage; i <= endPage; i++) {
+        html += `
+            <button class="page-btn ${currentPage === i ? 'active' : ''}"
+                onclick="goToPage(${i})">
+                ${i}
+            </button>
+        `;
+    }
+    // Last page
+    if (endPage < totalPages) {
+        if (endPage < totalPages - 1) {
+            html += `<span>...</span>`;
+        }
+        html += `<button class="page-btn" onclick="goToPage(${totalPages})">${totalPages}</button>`;
+    }
+    // Next button
+    html += `
+        <button class="page-btn" onclick="nextPage()" ${currentPage === totalPages ? "disabled" : ""}>
+        <i class="fa-solid fa-chevron-right"></i>
+        </button>
+    `;
+    document.querySelector(".pagination").innerHTML = html;
+}
+function prevPage(){
+    if(currentPage > 1){
+        currentPage--;
+        displayProducts();
+    }
+}
+function nextPage(){
+    let totalPages = Math.ceil(products.length / itemsPerPage);
+    if(currentPage < totalPages){
+        currentPage++;
+        displayProducts();
+    }
+}
+function goToPage(page){
+    currentPage = page;
+    displayProducts();
+}
+function updateActivePage(){
+    let buttons = document.querySelectorAll(".page-btn");
+    buttons.forEach(btn => {
+        btn.classList.remove("active");
+    });
+    buttons.forEach(btn => {
+        if(Number(btn.innerText) === currentPage){
+            btn.classList.add("active");
+        }
+    });
+}
+function editProduct(id){
+    let product = products.find(p => p.id === id);
+    editId = id;
+    document.getElementById("editName").value = product.name || product.productName;
+    document.getElementById("editPrice").value = product.price;
+    document.getElementById("editAvatar").value = product.avatar;
+
+document.querySelector("#editModal h2").innerText = "Edit Product";
+document.getElementById("saveBtn").innerText = "Update";
+    document.getElementById("editModal").style.display = "flex";
+}let deleteId = null;
+function deleteProduct(id){
+    deleteId = id;
+    document.getElementById("deleteModal").style.display =
+    "flex";
+}
+function closeDeleteModal(){
+    document.getElementById("deleteModal").style.display = "none";
+}
+async function updateProduct(){
+    let newName =
+    document.getElementById("editName").value;
+    let newPrice =
+    document.getElementById("editPrice").value;
+    let newAvatar =
+    document.getElementById("editAvatar").value;
+    if(editId === null){
+        await fetch(API_URL,{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({
+                name:newName,
+                price:newPrice,
+                avatar:newAvatar
+            })
+        });
+        getProducts();
+    }
+    else{
+        await fetch(API_URL + "/" + editId,{
+            method:"PUT",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({
+                name:newName,
+                price:newPrice,
+                avatar:newAvatar
+            })
+        });
+        let product =
+        products.find(p => p.id === editId);
+        product.name = newName;
+        product.price = newPrice;
+        product.avatar = newAvatar;
+    }
+    closeModal();
+    getProducts();
+}
+function openAddModal(){
+    editId = null;
+    document.getElementById("editName").value = "";
+    document.getElementById("editPrice").value = "";
+    document.getElementById("editAvatar").value = "";
+
+    document.querySelector("#editModal h2").innerText = "Add Product";
+    document.getElementById("saveBtn").innerText = "Add Product";
+    document.getElementById("editModal").style.display = "flex";
+}
+function closeModal(){
+    document.getElementById("editModal").style.display = "none";
+     document.getElementById("deleteModal").style.display =
+    "none";
+}
+function setActive(element){
+    let items = document.querySelectorAll(".menu-item");
+    items.forEach(item => {
+        item.classList.remove("active");
+    });
+    element.classList.add("active");
+}
+function toggleFilter(){
+    document.getElementById("filterMenu").classList.toggle("show");
+}
+function sortProducts(type){
+
+    if(type === "low"){
+
+        products.sort((a,b)=>Number(a.price)-Number(b.price));
+    }
+    else if(type === "high"){
+
+        products.sort((a,b)=>Number(b.price)-Number(a.price));
+
+    }
+    else if(type === "latest"){
+
+        products.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+    }
+    else if(type === "oldest"){
+
+        products.sort((a,b)=>new Date(a.createdAt)-new Date(b.createdAt));
+    }
+    currentPage = 1;
+
+    displayProducts();
+    document.getElementById("filterMenu").classList.remove("show");
+}
+window.addEventListener("click",function(e){
+
+    if(!e.target.closest(".filter-dropdown")){
+
+        document.getElementById("filterMenu").classList.remove("show");
+    }
+});
+async function confirmDelete(){
+    try{
+        await fetch(API_URL + "/" + deleteId,{
+            method:"DELETE"
+        });
+        products = products.filter(
+            p => p.id !== deleteId
+        );
+        displayProducts();
+        closeDeleteModal();
+    }
+    catch(error){
+        console.log(error);
+    }
+}
+</script>
+</body>
+</html>

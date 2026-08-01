@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Color Change Task</title>
+
+  <style>
+
+    body{
+      font-family: Arial, sans-serif;
+      height: 100vh;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container{
+      text-align: center;
+    }
+
+    h1{
+      margin-bottom: 30px;
+    }
+
+    button{
+      padding: 12px 25px;
+      margin: 10px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+  <div class="container">
+
+    <!-- HEADING -->
+
+    <h1 id="heading">
+      Button Color Changing
+    </h1>
+
+    <!-- BUTTONS -->
+
+    <button onclick="changeBackground()">
+      Red
+    </button>
+
+    <button onclick="changeHeadingColor()">
+      Green
+    </button>
+
+    <button id="blueBtn" onclick="changeButtonColor()">
+      Blue
+    </button>
+
+  </div>
+
+  <script>
+
+    // Change Background Color
+
+    function changeBackground(){
+
+      document.body.style.backgroundColor = "red";
+
+      document.getElementById("heading").style.color =
+      "black";
+
+      document.getElementById("blueBtn").style.backgroundColor =
+      "";
+
+    }
+
+    // Change Heading Color
+
+    function changeHeadingColor(){
+
+      document.body.style.backgroundColor = "white";
+
+      document.getElementById("heading").style.color =
+      "green";
+
+      document.getElementById("blueBtn").style.backgroundColor =
+      "";
+
+    }
+
+    // Change Blue Button Color
+
+    function changeButtonColor(){
+
+      document.body.style.backgroundColor = "white";
+
+      document.getElementById("heading").style.color =
+      "black";
+
+      document.getElementById("blueBtn").style.backgroundColor =
+      "blue";
+
+    }
+
+  </script>
+
+</body>
+
+</html>

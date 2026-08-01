@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport"
+  content="width=device-width, initial-scale=1.0">
+
+  <title>Student Result </title>
+
+  <style>
+
+    body{
+      font-family: Arial, sans-serif;
+      padding: 40px;
+    }
+
+    input{
+      display: block;
+      padding: 10px;
+      width: 250px;
+      margin-bottom: 15px;
+    }
+
+    button{
+      padding: 10px 20px;
+      border: none;
+      color: white;
+      margin-right: 10px;
+      cursor: pointer;
+    }
+
+    #addBtn{
+      background-color: black;
+    }
+
+    #passBtn{
+      background-color: green;
+    }
+
+    #failBtn{
+      background-color: red;
+    }
+
+    p{
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+  <h1>Student Result</h1>
+
+  <!-- Name Input -->
+
+  <input
+    type="text"
+    id="nameInput"
+    placeholder="Enter Name"
+  >
+
+  <!-- Mark Input -->
+
+  <input
+    type="number"
+    id="markInput"
+    placeholder="Enter Mark"
+  >
+
+  <!-- Add Button -->
+
+  <button
+    id="addBtn"
+    onclick="addStudent()"
+  >
+    Add
+  </button>
+
+  <br><br>
+
+  <!-- pass, fail Buttons -->
+
+  <button
+    id="passBtn"
+    onclick="showPassStudents()"
+  >
+    PASS
+  </button>
+
+  <button
+    id="failBtn"
+    onclick="showFailStudents()"
+  >
+    FAIL
+  </button>
+
+  <hr><br>
+
+  <!-- Students List -->
+  <h2>Student List</h2>
+  <div id="result"></div>
+
+  <script>
+
+    // Students Array
+
+    let students = [
+
+      {
+        name:"Arun",
+        mark: 90
+      },
+
+      {
+        name:"Mathu",
+        mark: 25
+      },
+
+      {
+        name:"Pavi",
+        mark: 70
+      },
+
+      {
+        name:"Mano",
+        mark: 30
+      },
+
+      {
+        name:"Chandran",
+        mark: 50
+      }
+    ];
+
+    // Show All Students 
+
+    showAllStudents();
+
+    // Add Student
+
+    function addStudent(){
+
+      let name =
+      document.getElementById("nameInput").value;
+
+      let mark =
+      document.getElementById("markInput").value;
+
+      // Create Object
+
+      let student = {
+
+        name: name,
+
+        mark: Number(mark)
+
+      };
+
+      // Add Array
+
+      students.push(student);
+
+      // Show newstudent List
+
+      showAllStudents();
+
+      // Clear Inputs
+
+      document.getElementById("nameInput").value =
+      "";
+
+      document.getElementById("markInput").value =
+      "";
+
+    }
+
+    // Show All Students
+
+    function showAllStudents(){
+
+      let output = "";
+
+      for(let i = 0; i < students.length; i++){
+
+        output += `
+        <p>
+          ${students[i].name}
+          -
+          ${students[i].mark}
+        </p>
+
+        `;
+      }
+      document.getElementById("result").innerHTML =
+      output;
+
+    }
+
+    // Show PASS Students
+
+    function showPassStudents(){
+
+      let output = "";
+
+      for(let i = 0; i < students.length; i++){
+
+        if(students[i].mark >= 35){
+          output += `
+          <p>
+            ${students[i].name}
+            -
+            ${students[i].mark}
+          </p>
+          `;
+        }
+      }
+
+      document.getElementById("result").innerHTML =
+      output;
+
+    }
+    // Show FAIL Students
+
+    function showFailStudents(){
+
+      let output = "";
+
+      for(let i = 0; i < students.length; i++){
+
+        if(students[i].mark < 35){
+          output += `
+          <p>
+            ${students[i].name}
+            -
+            ${students[i].mark}
+          </p>
+          `;
+        }
+      }
+      document.getElementById("result").innerHTML=
+      output;
+    }       
+  </script>
+</body>
+</html>
